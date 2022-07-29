@@ -31,17 +31,21 @@ if [[ ! -d $absfilepath ]]; then
   exit 1
 fi
 
-# take a screenshot (not working on Ubuntu > 18.10)
-deepin-screenshot
-
 # more than one argument
 if [[ $# -gt 1 ]]; then
   touch $desktoppath/too_much_arguments
   exit 1
 fi
 
+# take a screenshot (not working on Ubuntu > 18.10)
+#deepin-screenshot
+# use instead ksnip
+ksnip
+# wait ksnip to be closed
+wait $!
+
 # It must be only one deepin file in source folder
-nbresult=$(ls $desktoppath | grep Deepin | wc -l)
+nbresult=$(ls $desktoppath | grep ksnip | wc -l)
 if [[ $nbresult -ne 1 ]]; then 
   touch $desktoppath/no-or-more-than-one-file-found
   exit 1
@@ -49,5 +53,6 @@ fi
 
 # rename the screenshot, move it to destination folder, copy the formatted string in clipboard for instant use
 filename=screenshot_$(date +%s)
-file=$(find $desktoppath -maxdepth 1 -cmin -1 -name "*Deepin*" -exec mv '{}' $absfilepath/$filename.png \;)
+file=$(find $desktoppath -maxdepth 1 -cmin -1 -name "*ksnip*" -exec mv '{}' $absfilepath/$filename.png \;)
 echo "![screenshot]("$relfilepath$filename".png)" | xclip -sel clip
+
